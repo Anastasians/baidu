@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Shopping list example</title>
+    <style>
+      li {
+        margin-bottom: 10px;
+      }
+      li button {
+        font-size: 8px;
+        margin-left: 20px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>My shopping list</h1>
+
+    <div>
+      <label for="item">Enter a new item:</label>
+      <input type="text" name="item" id="item">
+      <button id="add">Add item</button>
+    </div>
+
+    <ul>
+
+    </ul>
+
+    <script>
+    	var ul=document.querySelector('ul')
+    	var input=document.querySelector('input')
+    	var button=document.querySelector('button')
+    	button.onclick=function(){
+//  		var item=document.getElementById('item')
+    		var content=input.value
+    		input.value=""
+//  		var ul=document.querySelector('ul')
+    		var li=document.createElement('li')
+//  		ul.appendChild(li)
+    		var span=document.createElement('span')
+    		var btn=document.createElement('button')
+    		li.appendChild(span)
+    		
+    		span.textContent=content
+    		li.appendChild(btn)
+			btn.textContent="delete"
+			ul.appendChild(li)
+    		btn.onclick=function(){
+    		ul.removeChild(li)
+    	}
+    		input.focus()
+    	}
+    	
+    </script>
+  </body>
+</html>
