@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<div id="time"></div>
+		<div id="times"></div>
+	</body>
+	<script>
+		//		在页面中显示当前日期及时间，按秒更新
+		//格式为 YYYY 年 MM 月 DD 日 星期 D HH:mm:ss
+		//注意位数的补齐，比如：
+		//-- 假设时间为2008年10月10日星期一的12点12分12秒，显示2008年10月10日星期一 12:12:12
+		//-- 假设时间为2008年1月1日星期一的3点2分2秒，显示2008年01月01日星期一 03:02:02
+		//编码过程中，我们希望你注意对函数的封装，尽量让一个函数就做一个事情，而不要把所有的功能、代码揉在一起：
+		//
+		//封装一个函数，来根据某个日期返回这一天是星期几
+		//封装一个函数，把月、日、小时等出现个位数的情况前面补充0，补充为两位，比如1变为01
+		//封装一个函数，把最后的日期时间，按照要求的格式进行包装
+		//可能不止上面这些，尽可能地进行功能的解耦和拆解
+		starttime()
+		function starttime(){
+			var myDate=new Date()
+			var year=myDate.getFullYear()
+			var month=myDate.getMonth()+1
+			var day=myDate.getDate()
+			var weekday=myDate.getDay();
+			var hour=myDate.getHours()
+			var min=myDate.getMinutes()
+			var seconds=myDate.getSeconds()
+			document.getElementById('time').innerHTML=year+"年"+zero(month)+"月"+zero(day)+"日"+weekdays(weekday)+zero(hour)+":"+zero(min)+":"+zero(seconds)
+			document.getElementById('times').innerHTML=year+"年"+zero(month)+"月"+zero(day)+"日"+EngWeek(weekday)+zero(hour)+":"+zero(min)+":"+zero(seconds)
+			t=setTimeout('starttime()',500)
+		}
+		
+		function zero(num){
+			if(num<=9){
+				return "0"+num;
+			}else{
+				return num;
+			}
+		}
+		function weekdays(weekday){
+			switch(weekday){
+				case 1:
+				return "星期一";
+				break;
+				case 2:
+				return "星期二";
+				break;
+				case 3:
+				return "星期三";
+				break;
+				case 4:
+				return "星期四";
+				break;
+				case 5:
+				return "星期五";
+				break;
+				case 6:
+				return "星期六";
+				break;
+				case 7:
+				return "星期日";
+				break;
+			}
+		}
+		
+		function EngWeek(weekday){
+			switch(weekday){
+				case 1:
+				return "Monday";
+				break;
+				case 2:
+				return "TuesDay";
+				break;
+				case 3:
+				return "WebnesDay";
+				break;
+				case 4:
+				return "ThursDay";
+				break;
+				case 5:
+				return "FriDay";
+				break;
+				case 6:
+				return "SaturDay";
+				break;
+				case 7:
+				return "SunDay";
+				break;
+			}
+		}
+		
+//		console.log(year+"年"+zero(month)+"月"+zero(day)+"日"+weekdays(weekday)+zero(hour)+":"+zero(min)+":"+zero(seconds))	
+	</script>
+
+</html>
