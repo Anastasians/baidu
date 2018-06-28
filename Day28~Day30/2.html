@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<style type="text/css">
+		.email-sug {
+			border: 1px solid;
+			list-style: none;
+			width: 171px;
+			margin: 0;
+			padding: 0;
+			display: none;
+		}
+		
+		.email-sug li:hover {
+			background-color: #FFC0CB;
+		}
+	</style>
+
+	<body>
+		<div class="wrapper">
+			<input id="email-input" type="text" oninput="inputDom()">
+			<ul id="email-sug-wrapper" class="email-sug"></ul>
+		</div>
+	</body>
+	<script type="text/javascript">
+		//		第一步是后面几步的起点，所以，我们可以把后面几步各自封装成一个函数，在第一步里进行调用
+
+		//第二步，获取用户输入，这个比较简单，注意考虑trim
+
+		//	111111111	inputDom的输入监听 = function() {
+		//			获取用户输入， 生成提示框中的提示内容， 将提示内容添加到email - sug - wrapper中
+		//			控制email - sug - wrapper的显示 / 隐藏状态
+		//		}
+		//		function inputDom() {
+		//			document.getElementById('email-sug-wrapper').innerHTML = ""
+		//			addtipContent()
+		//			showOrhidden()
+		//		}
+
+		//		function 获取用户输入() {
+		//			拿到input输入框的输入内容trim后返回
+		//		}
+		function getInput() {
+			var inputContent = document.getElementById('email-input').value
+			return inputContent.replace(/(^\s*)|(\s*$)/g, "");
+		}
+
+		//第三步，生成提示框提示内容，根据第二步获得的内容，遍历postfixList数组，生成要在email-sug-wrapper的UL中填充的内容。
+
+		//111111111111111		function 生成提示框中的提示内容() {
+		//			获取用户输入
+		//			遍历postfixList {
+		//				把用户输入和每一个postfix进行结合成为每一个Li
+		//			}
+		//			返回生成的提示内容
+		//		}
+		//		function tipContent() {
+		//			var postfixList = ['@163.com', '@gmail.com', '@126.com', '@qq.com', '@263.net'];
+		//			for(var i = 0; i < postfixList.length; i++) {
+		//				postfixList[i] = getInput() + postfixList[i]
+		//			}
+		//			return postfixList
+		//		}
+
+		//2222222222222222		function 生成提示框中的提示内容() {
+		//  用来拼接的用户输入内容 = 获取用户输入
+		//  if 用户输入含有@ {
+		//      用来拼接的用户输入内容 = 只使用@之前的字符串
+		//  }
+		//  遍历postfixList {
+		//      把用来拼接的用户输入内容和每一个postfix进行结合成为每一个Li
+		//  }
+		//  返回生成的提示内容
+		//}
+		//		function tipContent() {
+		//			var postfixList = ['@163.com', '@gmail.com', '@126.com', '@qq.com', '@263.net'];
+		//			for(var i = 0; i < postfixList.length; i++) {
+		//				if(getInput().indexOf('@') !== -1) {
+		//					postfixList[i] = getInput().substr(0, getInput().indexOf('@')) + postfixList[i]
+		//				} else {
+		//					postfixList[i] = getInput() + postfixList[i]
+		//				}
+		//
+		//			}
+		//			return postfixList
+		//
+		//		}
+
+		/////////////////////////////////////////不会//////////////////////////////////////////////	
+		//333333function 生成提示框中的提示内容() {
+		//  用来拼接的用户输入内容 = 获取用户输入
+		//  if 用户输入含有@ {
+		//      用来拼接的用户输入内容 = @之前的字符串
+		//      用来前缀匹配的用户输入内容 = @之后的字符串
+		//  }    
+		//  遍历postfixList {
+		//      if 用来前缀匹配的用户输入内容前缀匹配遍历字符串元素
+		//          把用来拼接的用户输入内容和这个字符串进行结合成为一个Li
+		//  }
+		//  返回生成的提示内容
+		//}
+
+		function tipContent() {
+			var postfixList = ['@163.com', '@gmail.com', '@126.com', '@qq.com', '@263.net'];
+			var a = []
+			var b = []
+			var c = []
+			if(getInput().indexOf('@') !== -1) {
+				if(getInput().charAt(getInput().length - 1) !== '@') {
+					a.push(getInput().charAt(getInput().length - 1))
+					for(var i = 0; i < postfixList.length; i++) {
+						for(var j = 0; j < postfixList[i].length; j++) {
+							b.push(postfixList[i].charAt(j))
+
+						}
+						if(a[0] !== b[1]) {
+							c.push(i)
+							b = []
+						} else {
+							b = []
+
+						}
+
+					}
+					if(c.length != 0) {
+						for(var k = c.length - 1; k <= 0; k--) {
+							postfixList.splice(c[k], 1)
+						}
+					}
+				}
+			}
+
+			for(var i = 0; i < postfixList.length; i++) {
+				if(getInput().indexOf('@') !== -1) {
+					postfixList[i] = getInput().substr(0, getInput().indexOf('@')) + postfixList[i]
+				} else {
+					postfixList[i] = getInput() + postfixList[i]
+				}
+
+			}
+			return postfixList
+
+		}
+
+		//		function 将提示内容添加到email - sug - wrapper中() {
+		//			获取生成提示框中的提示内容
+		//			将内容添加到email - sug - wrapper中
+		//		}
+		function addtipContent() {
+			for(var i = 0; i < tipContent().length; i++) {
+				var content = document.createElement('li')
+				content.innerHTML = tipContent()[i]
+				document.getElementById('email-sug-wrapper').appendChild(content)
+			}
+		}
+
+		//第四步，根据实际是否有提示内容，控制email-sug-wrapper的显示/隐藏情况
+
+		//		function 控制email - sug - wrapper的显示 / 隐藏状态() {
+		//			if 用户输入为空 {
+		//				隐藏提示框
+		//			} else {
+		//				显示提示框
+		//			}
+		//		}
+		function showOrhidden() {
+			if(getInput() == "") {
+				hidden()
+			} else {
+				show()
+			}
+		}
+
+		//		function 隐藏提示框() {
+		//			做具体隐藏提示框的操作
+		//		}
+		function hidden() {
+			document.getElementById('email-sug-wrapper').style.display = 'none'
+		}
+
+		//		function 显示提示框() {
+		//			做具体显示提示框的操作
+		//		}
+		function show() {
+			document.getElementById('email-sug-wrapper').style.display = 'block'
+		}
+
+		//		选择一个合适的DOM节点.监听鼠标点击 = function() {
+		//			if 被点击的是不是提示框中的Li节点 {
+		//				获取被点击Li对应的提示内容
+		//				将内容放到input输入框中
+		//				隐藏输入框
+		//			}
+		//		}
+		document.getElementById('email-sug-wrapper').onmousedown = function(e) {
+			var oLis = document.getElementsByTagName('li')
+			var inputContent = document.getElementById('email-input')
+			if(oLis) {
+				for(var i = 0; i < oLis.length; i++) {
+					oLis[i].onclick = (function(i) {
+						return function() {
+							inputContent.value = oLis[i].innerHTML
+							hidden()
+						}
+					}(i))
+				}
+			}
+		}
+
+		// 22222222需要修改一下之前的inputDom的输入监听
+		//		inputDom的输入监听 = function() {
+		//			// 新增
+		//			如果按键不是上下及回车,重置选中状态()
+		//
+		//			获取用户输入， 生成提示框中的提示内容， 将提示内容添加到email - sug - wrapper中
+		//			控制email - sug - wrapper的显示 / 隐藏状态
+		//		}
+		//
+
+		document.getElementById('email-input').onkeydown = function(e) {
+			e = e || window.event
+			if(e.keyCode !== 38 && e.keyCode !== 40 && e.keyCode !== 13) {
+				resetChoose()
+				document.getElementById('email-sug-wrapper').innerHTML = ""
+				addtipContent()
+				showOrhidden()
+			}
+
+		}
+
+		//		function 重置选中状态() {
+		//			找到当前为选中状态的Li
+		//			if(当前选中状态Li不是第一个) {
+		//				清除掉它的选中状态
+		//				设置第一个Li为选中状态
+		//			}
+		//		}
+
+		function resetChoose() {
+			var oLis = document.getElementsByTagName('li')
+			if(oLis) {
+				for(var i = 0; i < oLis.length; i++) {
+					oLis[i].onclick = (function(i) {
+						return function() {
+							if((i + 1) !== 1) {
+								oLis[i].style.background = '#fff'
+								oLis[0].style.background = '#FFC0CB'
+							}
+						}
+					}(i))
+				}
+			}
+		}
+
+		// 监听特殊3个键的键盘事件，这个事件可能就是inputDom的输入监听，也有可能是另外一个，请自己测试后判断
+		//		监听特殊3个键的键盘事件 = function() {
+		//			找到当前为选中状态的Li
+		//			清除掉它的选中状态
+		//			if 按的是上键 {
+		//				if 找到的Li不是第一个 {
+		//					将它的前一个Li设为选中
+		//				} else {
+		//					将最后一个Li设为选中
+		//				}
+		//			}
+		//			if 按的是下键 {
+		//				if 找到的Li不是最后一个 {
+		//					将它的下一个Li设为选中
+		//				} else {
+		//					将第一个Li设为选中
+		//				}
+		//			}
+		//
+		//			if 按的是回车 {
+		//				将找到的Li的HTML内容解码后填到input中
+		//				隐藏提示框
+		//			}
+		//		}
+		
+		document.getElementById('email-input').onkeydown=function(e){
+			var oLis = document.getElementsByTagName('li')
+			e=window.event||e
+			if(oLis) {
+				for(var i = 0; i < oLis.length; i++) {
+					oLis[i].onclick = (function(i) {
+						return function() {
+							if((i + 1) !== 1) {
+								oLis[i].style.background = '#fff'
+							}
+							if(e.keyCode==38){
+								
+							}else if(keyCode==40){
+								if((i+1)!=oLis.length){
+									
+								}else{
+									oLis[i].style.background = '#FFC0CB'
+								}
+							}else if(e.keyCode==13){
+								
+							}
+						}
+					}(i))
+				}
+			}
+		}
+	</script>
+
+</html>

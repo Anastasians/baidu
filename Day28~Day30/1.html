@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<style type="text/css">
+		.email-sug {
+			border: 1px solid;
+			list-style: none;
+			width: 171px;
+			margin: 0;
+			padding: 0;
+			display: none;
+		}
+		.email-sug li{
+			border-bottom: 1px solid;
+		}
+		.email-sug li:hover{
+			background-color: #FFC0CB;
+		}
+	</style>
+
+	<body>
+		<div class="wrapper">
+			<input id="email-input" type="text" onkeypress="inputChange()">
+			<ul id="email-sug-wrapper" class="email-sug"></ul>
+		</div>
+
+	</body>
+	<script type="text/javascript">
+		// 邮箱后缀List参考
+		
+		//		当用户没有任何输入时，提示框消失
+		//当用户输入字符后，显示提示框，并且把用户输入的内容自动拼上邮箱后缀进行显示
+		//暂时不用考虑示意图中的红色和蓝色背景色的逻辑
+		//注意用户输入中前后空格需要去除
+		var inputContent = document.getElementById('email-input')
+		var emailContent = document.getElementById('email-sug-wrapper')
+
+		function inputChange() {
+			if(inputContent.value) {
+				emailContent.innerHTML=""
+				emailContent.style.display='block'
+				var postfixList = ['@163.com', '@gmail.com', '@126.com', '@qq.com', '@263.net'];
+				for(var i = 0; i < postfixList.length; i++) {
+					postfixList[i] = inputContent.value + postfixList[i]
+					var li = document.createElement('li')
+					li.innerHTML = postfixList[i]
+					emailContent.appendChild(li)
+				}
+			}
+console.log('event handle')
+		}
+
+	</script>
+
+</html>
