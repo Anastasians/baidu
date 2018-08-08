@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<script src="js/ife31data.js" type="text/javascript" charset="utf-8"></script>
+
+	<body>
+		<div id="region-radio-wrapper">
+			<label><input type="checkbox" name="checkAllOne" id="allOne" value="0" />全选</label>
+			<label><input type="checkbox" name="checkOne" id="1" value="1" />华东</label>
+			<label><input type="checkbox" name="checkOne" id="2" value="2" />华南</label>
+			<label><input type="checkbox" name="checkOne" id="3" value="3" />华北</label>
+		</div>
+		<div id="product-radio-wrapper">
+			<label><input type="checkbox" name="checkAllTwo" id="allTwo" value="0" />全选</label>
+			<label><input type="checkbox" name="checkTwo" id="1" value="1" />手机</label>
+			<label><input type="checkbox" name="checkTwo" id="2" value="2" />笔记本</label>
+			<label><input type="checkbox" name="checkTwo" id="3" value="3" />智能音箱</label>
+		</div>
+		<div id="table-wrapper">
+		</div>
+	</body>
+	<script type="text/javascript">
+		var regionRadioWrapper = document.getElementById('region-radio-wrapper')
+		var productRadioWrapper = document.getElementById('product-radio-wrapper')
+		var checkOne = document.getElementsByName('checkOne')
+		var checkTwo = document.getElementsByName('checkTwo')
+		var tableWrapper = document.getElementById('table-wrapper')
+		var label = document.getElementsByTagName('input')
+
+		function all(num) {
+			//			console.log(22)
+			if(num == 1) {
+				for(var i = 0; i < 3; i++) {
+					checkOne[i].checked = allOne.checked
+				}
+			} else if(num == 2) {
+				for(var i = 0; i < 3; i++) {
+					checkTwo[i].checked = allTwo.checked
+				}
+			}
+
+		}
+
+		//		给容器做一个事件委托 = function() {
+		//			if 是checkbox
+		//			读取自定义属性
+		//			if 全选
+		//			做全选对应的逻辑
+		//			else
+		//				做子选项对应的逻辑
+		//		}
+		regionRadioWrapper.onclick = function(e) {
+			e = e || window.event
+			var target = e.target || e.srcElement
+			if(target.type == 'checkbox') {
+				if(target.value == '0') {
+					all(1)
+				} else {
+					if(target.checked == false) {
+						allOne.checked = false
+						var falseLong = 0
+						for(j in checkOne) {
+							if(checkOne[j].checked == false) {
+								falseLong++
+								if(falseLong == 3) {
+									target.checked = true
+								}
+							}
+						}
+					} else {
+						var long = 0
+						for(j in checkOne) {
+							if(checkOne[j].checked == true) {
+								long++
+								if(long == 3) {
+									allOne.checked = true
+								}
+							}
+						}
+
+					}
+				}
+			}
+			refesh()
+		}
+
+		productRadioWrapper.onclick = function(e) {
+			e = e || window.event
+			var target = e.target || e.srcElement
+			if(target.type == 'checkbox') {
+				if(target.value == '0') {
+					all(2)
+				} else {
+					if(target.checked == false) {
+						allTwo.checked = false
+						var falseLongs = 0
+						for(j in checkTwo) {
+							if(checkTwo[j].checked == false) {
+								falseLongs++
+								if(falseLongs == 3) {
+									target.checked = true
+								}
+							}
+						}
+					} else {
+						var longs = 0
+						for(j in checkTwo) {
+							if(checkTwo[j].checked == true) {
+								longs++
+								if(longs == 3) {
+									allTwo.checked = true
+								}
+							}
+						}
+
+					}
+				}
+			}
+			refesh()
+		}
+
+		//		function 获取数据 {
+		//			遍历原始数据 {
+		//				判断是否在商品维度 或者 地区维度的选中范围内 {
+		//					添加到返回数据list中
+		//				}
+		//			}
+		//			返回数据
+		//		}
+		function getContent() {
+			var list = []
+			if(allOne.checked == true && allTwo.checked == true) {
+				var list = sourceData
+			} else {
+				for(j in checkOne) {
+					for(var i = 0; i < sourceData.length; i++) {
+						if(checkOne[j].checked == true) {
+							if(regionRadioWrapper.children[Number(j) + 1].innerText == sourceData[i].region) {
+								list.push(sourceData[i])
+							}
+						}
+					}
+
+				}
+				var listTwo = list
+				var list = []
+				for(j in checkTwo) {
+					for(var i = 0; i < listTwo.length; i++) {
+						if(checkTwo[j].checked == true) {
+							if(productRadioWrapper.children[Number(j) + 1].innerText == listTwo[i].product) {
+								list.push(listTwo[i])
+							}
+						}
+					}
+
+				}
+			}
+			return list
+
+		}
+
+		//		function 渲染新的表格() {
+		//			根据表单选项获取数据
+		//			渲染表格
+		//		}
+		function refesh() {
+			tableWrapper.innerHTML = ''
+			var lists = getContent()
+			var ol = 0
+			for(j in checkOne) {
+				if(checkOne[j].checked == true) {
+					ol++
+				}
+			}
+			var tl = 0
+			for(j in checkTwo) {
+				if(checkTwo[j].checked == true) {
+					tl++
+				}
+			}
+			var index = 0
+			//			地区==1   商品>1
+			if(ol == 1 && tl > 1) {
+				var a = '地区'
+				var b = '商品'
+				index = 1
+			} else {
+				//			地区》=商品
+
+				var a = '商品'
+				var b = '地区'
+				index = 2
+			}
+
+			var title = [a, b, '1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+			var tr = document.createElement('tr')
+			for(var i = 0; i < title.length; i++) {
+				var th = document.createElement('th')
+				th.innerHTML = title[i]
+				th.style.border = '1px solid'
+				th.style.width = '200px'
+				tr.appendChild(th)
+			}
+			tableWrapper.appendChild(tr)
+			//			地区==1   商品>1
+			if(index == 1) {
+				for(var j = 0; j < lists.length; j++) {
+					var trs = document.createElement('tr')
+					var num = 0
+					for(var k = 0; k < title.length; k++) {
+
+						if(k == 0) {
+							if(!tableWrapper.children[1]) {
+								var td = document.createElement('td')
+								td.innerHTML = lists[j].region
+								td.style.border = '1px solid'
+								td.style.width = '200px'
+								trs.appendChild(td)
+							}
+
+						} else if(k == 1) {
+							var td = document.createElement('td')
+							td.innerHTML = lists[j].product
+							td.style.border = '1px solid'
+							td.style.width = '200px'
+							trs.appendChild(td)
+						} else {
+							var td = document.createElement('td')
+							td.innerHTML = lists[j].sale[num]
+							num++
+							td.style.border = '1px solid'
+							td.style.width = '200px'
+							trs.appendChild(td)
+						}
+
+					}
+					tableWrapper.appendChild(trs)
+					tableWrapper.children[1].children[0].rowSpan = tableWrapper.children.length - 1
+
+				}
+			} else if(index == 2) {
+				//			地区》=商品
+				var r = 0
+				for(var j = 0; j < lists.length; j++) {
+					var trs = document.createElement('tr')
+					var num = 0
+
+					for(var k = 0; k < title.length; k++) {
+
+						if(k == 0) {
+							if(tl == 1) {
+								if(r < 1) {
+									var td = document.createElement('td')
+									td.innerHTML = lists[j].product
+									td.style.border = '1px solid'
+									td.style.width = '200px'
+									trs.appendChild(td)
+									r++
+								}
+							} else {
+								//								if(r < (lists.length/ol)) {
+								var td = document.createElement('td')
+								td.innerHTML = lists[j].product
+								td.style.border = '1px solid'
+								td.style.width = '200px'
+								trs.appendChild(td)
+								r++
+								//								}
+							}
+
+						} else if(k == 1) {
+							var td = document.createElement('td')
+							td.innerHTML = lists[j].region
+							td.style.border = '1px solid'
+							td.style.width = '200px'
+							trs.appendChild(td)
+						} else {
+							var td = document.createElement('td')
+							td.innerHTML = lists[j].sale[num]
+							num++
+							td.style.border = '1px solid'
+							td.style.width = '200px'
+							trs.appendChild(td)
+						}
+					}
+					tableWrapper.appendChild(trs)
+					
+
+				}
+				if(tableWrapper.children[2]) {
+								var z=1
+					
+						for(var f = 0; f < tl; f++) {
+//							for(var z = 1; z < lists.length;) {
+//								var a=0
+//								if(z==1){
+
+									tableWrapper.children[z].children[0].rowSpan=(tableWrapper.children.length - 1) / tl
+//									tableWrapper.children[z+1].children.splice(0,1)
+//									var arrays=tableWrapper.children[z+1].children
+//									console.log(arrays)
+//									
+//									var value=arrays.shift()
+//									console.log(array)
+									z=z+ol
+//								}
+
+//							}
+						}
+
+					}
+				//				var tr = document.getElementsByTagName('tr')
+				//				var rows = 0
+				//				var a = []
+				//				if(tr.length > 2) {
+				//					for(var o = 0; o < lists.length; o++) {
+				//						if(a.length == 0) {
+				//							a.push(lists[o])
+				//							if(lists[o].product == a[0].product) {
+				//								rows++
+				//								console.log(rows)
+				//							}
+				//
+				//						} else {
+				//							if(lists[o].product == a[0].product) {
+				//								rows++
+				//								console.log(rows)
+				//							}
+				//						}
+				//
+				//					}
+				//					for(var i = 1; i < tableWrapper.children.length-1; i++) {
+				//						var tds=tableWrapper.children[i].children[0]
+				//						tableWrapper.children[i].remove(tds)
+				//						tableWrapper.children[i].children[0].rowSpan = rows.toString()
+				//						
+				//					}
+
+				//				}
+
+			}
+
+		}
+	</script>
+
+</html>

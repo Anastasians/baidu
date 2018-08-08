@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<script src="js/ife31data.js" type="text/javascript" charset="utf-8"></script>
+
+	<body>
+		<select id="region-select">
+			<option value="">请选择</option>
+			<option value="1">华东</option>
+			<option value="2">华南</option>
+			<option value="3">华北</option>
+		</select>
+		<select id="items-select">
+			<option value="">请选择</option>
+			<option value="1">手机</option>
+			<option value="2">笔记本</option>
+			<option value="3">智能音箱</option>
+		</select>
+		<div id="table-wrapper">
+		</div>
+	</body>
+	<script type="text/javascript">
+		//		region - select的change事件 = function() {
+		//			渲染新的表格()
+		//		}
+		var regionSelect = document.getElementById('region-select')
+		var itemsSelect = document.getElementById('items-select')
+		var tableWrapper = document.getElementById('table-wrapper')
+
+		regionSelect.onchange = function() {
+			refesh()
+		}
+		itemsSelect.onchange = function() {
+			refesh()
+		}
+		//		function 根据select选项获取数据() {
+		//			遍历数据 {
+		//				向要返回的数据list中添加符合表单所选项的数据
+		//			}
+		//			返回数据
+		//		}
+		function choose() {
+			var list = []
+			var chooseRegion = regionSelect.options[regionSelect.value].innerHTML
+			if(regionSelect.value !== "") {
+				for(var i = 0; i < sourceData.length; i++) {
+					if(sourceData[i].region == chooseRegion) {
+						list.push(sourceData[i])
+					}
+
+				}
+				if(itemsSelect.value !== "") {
+					var lists = list
+					var list = []
+					var chooseItems = itemsSelect.options[itemsSelect.value].innerHTML
+					for(var i = 0; i < lists.length; i++) {
+						if(lists[i].product == chooseItems) {
+							list.push(lists[i])
+						}
+					}
+				}
+			}
+			console.log(list)
+			return list
+		}
+
+		//		function 渲染新的表格() {
+		//			根据表单选项获取数据
+		//			渲染表格
+		//		}
+		function refesh() {
+			tableWrapper.innerHTML = ''
+			var lists = choose()
+			var title = ['商品', '地区', '1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+			var tr = document.createElement('tr')
+			for(var i = 0; i < title.length; i++) {
+				var th = document.createElement('th')
+				th.innerHTML = title[i]
+				th.style.border = '1px solid'
+				th.style.width = '200px'
+				tr.appendChild(th)
+			}
+			tableWrapper.appendChild(tr)
+
+			for(var j = 0; j < lists.length; j++) {
+				var trs = document.createElement('tr')
+				var num = 0
+				for(var k = 0; k < title.length; k++) {
+					var td = document.createElement('td')
+					if(k == 0) {
+						td.innerHTML = lists[j].product
+					} else if(k == 1) {
+						td.innerHTML = lists[j].region
+					} else {
+						td.innerHTML = lists[j].sale[num]
+						num++
+					}
+					td.style.border = '1px solid'
+					td.style.width = '200px'
+					trs.appendChild(td)
+				}
+				tableWrapper.appendChild(trs)
+
+			}
+
+		}
+	</script>
+
+</html>
